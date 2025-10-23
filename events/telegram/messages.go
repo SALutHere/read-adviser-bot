@@ -1,6 +1,6 @@
 package telegram
 
-const msgHelp = `I can save and keep you pages. Also I can offer you to them to read.
+const msgHelp = `I can save and keep your pages. Also I can offer you to them to read.
 
 In order to save the page, just send me a link to it.
 
