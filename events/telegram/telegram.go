@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"context"
 	"errors"
 	"read-adviser-bot/clients/telegram"
 	"read-adviser-bot/events"
@@ -52,16 +53,16 @@ func (p *Processor) Fetch(limit int) ([]events.Event, error) {
 	return res, nil
 }
 
-func (p *Processor) Process(event events.Event) error {
+func (p *Processor) Process(ctx context.Context, event events.Event) error {
 	switch event.Type {
 	case events.Message:
-		return p.processMessage(event)
+		return p.processMessage(ctx, event)
 	default:
 		return e.Wrap("can't process message", ErrUnknownEventType)
 	}
 }
 
-func (p *Processor) processMessage(event events.Event) (err error) {
+func (p *Processor) processMessage(ctx context.Context, event events.Event) (err error) {
 	defer func() { err = e.WrapIfErr("can't process message", err) }()
 
 	meta, err := meta(event)
@@ -69,7 +70,7 @@ func (p *Processor) processMessage(event events.Event) (err error) {
 		return err
 	}
 
-	if err := p.doCmd(event.Text, meta.ChatID, meta.Username); err != nil {
+	if err := p.doCmd(ctx, event.Text, meta.ChatID, meta.Username); err != nil {
 		return err
 	}
 
